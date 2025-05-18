@@ -21,6 +21,16 @@ paths:
             type: integer
             format: int32
           example: 10
+        - name: title
+          in: query
+          schema:
+            type: string
+        - name: order
+          in: query
+          schema:
+            type: integer
+            format: int32
+            example: 1
       security:
         - bearerAuth: [ ]
       responses:
@@ -34,13 +44,20 @@ paths:
       operationId: CreateProblem
       security:
         - bearerAuth: [ ]
+      parameters:
+        - name: title
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "Problem 1"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateProblemResponse'
+                $ref: '#/components/schemas/CreationResponse'
   /problems/{id}:
     get:
       operationId: GetProblem
@@ -151,6 +168,13 @@ paths:
                 $ref: '#/components/schemas/ListContestsResponse'
     post:
       operationId: CreateContest
+      parameters:
+        - name: title
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "Contest 1"
       security:
         - bearerAuth: [ ]
       responses:
@@ -159,14 +183,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateContestResponse'
-  /contests/{id}:
+                $ref: '#/components/schemas/CreationResponse'
+  /contests/{contest_id}:
     get:
       operationId: GetContest
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: id
+        - name: contest_id
           in: path
           required: true
           schema:
@@ -185,7 +209,7 @@ paths:
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: id
+        - name: contest_id
           in: path
           required: true
           schema:
@@ -200,7 +224,7 @@ paths:
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: id
+        - name: contest_id
           in: path
           required: true
           schema:
@@ -216,14 +240,14 @@ paths:
       responses:
         "200":
           description: OK
-  /tasks:
+  /contests/{contest_id}/problems:
     post:
-      operationId: CreateTask
+      operationId: CreateContestProblem
       security:
         - bearerAuth: [ ]
       parameters:
         - name: contest_id
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -242,14 +266,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateTaskResponse'
-  /tasks/{id}:
+                $ref: '#/components/schemas/CreationResponse'
+  /contests/{contest_id}/problems/{problem_id}:
     get:
-      operationId: GetTask
+      operationId: GetContestProblem
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: id
+        - name: problem_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: contest_id
           in: path
           required: true
           schema:
@@ -262,13 +293,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetTaskResponse'
+                $ref: '#/components/schemas/GetContestProblemResponse'
     delete:
-      operationId: DeleteTask
+      operationId: DeleteContestProblem
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: id
+        - name: problem_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: 2
+        - name: contest_id
           in: path
           required: true
           schema:
@@ -278,14 +316,14 @@ paths:
       responses:
         "200":
           description: OK
-  /participants:
+  /contests/{contest_id}/participants:
     get:
       operationId: ListParticipants
       security:
         - bearerAuth: [ ]
       parameters:
         - name: contest_id
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -311,14 +349,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListParticipantsResponse'
+                $ref: '#/components/schemas/ListUsersResponse'
     post:
       operationId: CreateParticipant
       security:
         - bearerAuth: [ ]
       parameters:
         - name: contest_id
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -337,40 +375,26 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateParticipantResponse'
+                $ref: '#/components/schemas/CreationResponse'
     delete:
       operationId: DeleteParticipant
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: participant_id
+        - name: user_id
           in: query
           required: true
           schema:
             type: integer
             format: int32
           example: 1
-      responses:
-        "200":
-          description: OK
-    patch:
-      operationId: UpdateParticipant
-      security:
-        - bearerAuth: [ ]
-      parameters:
-        - name: participant_id
-          in: query
+        - name: contest_id
+          in: path
           required: true
           schema:
             type: integer
             format: int32
           example: 1
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateParticipantRequest'
       responses:
         "200":
           description: OK
@@ -380,7 +404,14 @@ paths:
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: task_id
+        - name: problem_id
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: contest_id
           in: query
           required: true
           schema:
@@ -406,7 +437,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateSolutionResponse'
+                $ref: '#/components/schemas/CreationResponse'
     get:
       operationId: ListSolutions
       security:
@@ -432,13 +463,13 @@ paths:
             type: integer
             format: int32
           example: 1
-        - name: participantId
+        - name: userId
           in: query
           schema:
             type: integer
             format: int32
           example: 1
-        - name: task_id
+        - name: problem_id
           in: query
           schema:
             type: integer
@@ -469,13 +500,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ListSolutionsResponse'
-  /solutions/{id}:
+  /solutions/{solution_id}:
     get:
       operationId: GetSolution
       security:
         - bearerAuth: [ ]
       parameters:
-        - name: id
+        - name: solution_id
           in: path
           required: true
           schema:
@@ -489,14 +520,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetSolutionResponse'
-  /monitor:
+  /contests/{contest_id}/monitor:
     get:
       operationId: GetMonitor
       security:
         - bearerAuth: [ ]
       parameters:
         - name: contest_id
-          in: query
+          in: path
           required: true
           schema:
             type: integer
@@ -577,7 +608,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateUserResponse'
+                $ref: '#/components/schemas/CreationResponse'
     get:
       operationId: ListUsers
       parameters:
@@ -595,6 +626,23 @@ paths:
             type: integer
             format: int32
           example: 20
+        - name: order
+          in: query
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: role
+          in: query
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: username
+          in: query
+          schema:
+            type: string
+          example: user123
       security:
         - bearerAuth: [ ]
       responses:
@@ -664,6 +712,15 @@ paths:
           content: { }
 components:
   schemas:
+    CreationResponse:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
     Pagination:
       type: object
       required:
@@ -754,7 +811,6 @@ components:
         - time_limit
         - created_at
         - updated_at
-        - solved_count
       properties:
         id:
           type: integer
@@ -773,10 +829,6 @@ components:
         updated_at:
           type: string
           format: date-time
-        solved_count:
-          type: integer
-          format: int32
-
     ListProblemsResponse:
       type: object
       required:
@@ -789,15 +841,6 @@ components:
             $ref: '#/components/schemas/ProblemsListItem'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    CreateProblemResponse:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
     GetProblemResponse:
       type: object
       required:
@@ -805,28 +848,70 @@ components:
       properties:
         problem:
           $ref: '#/components/schemas/Problem'
-    Contest:
+    ContestProblem:
       type: object
       required:
-        - id
+        - problem_id
         - title
+        - time_limit
+        - memory_limit
+
+        - position
+
+        - legend_html
+        - input_format_html
+        - output_format_html
+        - notes_html
+        - scoring_html
+
         - created_at
         - updated_at
       properties:
-        id:
+        problem_id:
           type: integer
           format: int32
           example: 1
         title:
           type: string
-          example: "Test contest"
+          example: "Test problem"
+        time_limit:
+          type: integer
+          format: int32
+          example: 1000
+        memory_limit:
+          type: integer
+          format: int32
+          example: 256
+
+        position:
+          type: integer
+          format: int32
+
+        legend_html:
+          type: string
+        input_format_html:
+          type: string
+        output_format_html:
+          type: string
+        notes_html:
+          type: string
+        scoring_html:
+          type: string
+
         created_at:
           type: string
           format: date-time
         updated_at:
           type: string
           format: date-time
-    ContestsListItem:
+    GetContestProblemResponse:
+      type: object
+      required:
+        - problem
+      properties:
+        problem:
+          $ref: '#/components/schemas/ContestProblem'
+    Contest:
       type: object
       required:
         - id
@@ -856,22 +941,12 @@ components:
         contests:
           type: array
           items:
-            $ref: '#/components/schemas/ContestsListItem'
+            $ref: '#/components/schemas/Contest'
         pagination:
           $ref: '#/components/schemas/Pagination'
-    CreateContestResponse:
+    ContestProblemListItem:
       type: object
       required:
-        - id
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
-    TasksListItem:
-      type: object
-      required:
-        - id
         - problem_id
         - position
         - title
@@ -880,10 +955,6 @@ components:
         - created_at
         - updated_at
       properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
         problem_id:
           type: integer
           format: int32
@@ -913,78 +984,14 @@ components:
       type: object
       required:
         - contest
-        - tasks
+        - problems
       properties:
         contest:
           $ref: '#/components/schemas/Contest'
-        tasks:
+        problems:
           type: array
           items:
-            type: object
-            required:
-              - task
-              - solution
-            properties:
-              task:
-                $ref: '#/components/schemas/TasksListItem'
-              solution:
-                $ref: '#/components/schemas/SolutionsListItem'
-    CreateParticipantResponse:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
-    CreateTaskResponse:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
-    ParticipantsListItem:
-      type: object
-      required:
-        - id
-        - name
-        - user_id
-        - created_at
-        - updated_at
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
-        name:
-          type: string
-          example: "Test user"
-        user_id:
-          type: integer
-          format: int32
-          example: 1
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    ListParticipantsResponse:
-      type: object
-      required:
-        - participants
-        - pagination
-      properties:
-        participants:
-          type: array
-          items:
-            $ref: '#/components/schemas/ParticipantsListItem'
-        pagination:
-          $ref: '#/components/schemas/Pagination'
+            $ref: '#/components/schemas/ContestProblemListItem'
     UpdateProblemRequest:
       type: object
       properties:
@@ -1023,12 +1030,6 @@ components:
         title:
           type: string
           example: "Test contest"
-    UpdateParticipantRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          example: "Test user"
     CreateSolutionRequest:
       type: object
       required:
@@ -1037,16 +1038,6 @@ components:
         solution:
           type: string
           format: binary
-          example: 'print("Hello, world!")'
-    CreateSolutionResponse:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 1
     ListSolutionsResponse:
       type: object
       required:
@@ -1064,8 +1055,8 @@ components:
       required:
         - id
 
-        - participant_id
-        - participant_name
+        - user_id
+        - username
 
         - state
         - score
@@ -1074,9 +1065,10 @@ components:
         - memory_stat
         - language
 
-        - task_id
-        - task_position
-        - task_title
+        - problem_id
+        - problem_title
+
+        - position
 
         - contest_id
         - contest_title
@@ -1089,11 +1081,11 @@ components:
           format: int32
           example: 1
 
-        participant_id:
+        user_id:
           type: integer
           format: int32
           example: 1
-        participant_name:
+        username:
           type: string
           example: "user123"
 
@@ -1122,17 +1114,18 @@ components:
           format: int32
           example: 1
 
-        task_id:
+        problem_id:
           type: integer
           format: int32
           example: 1
-        task_position:
-          type: integer
-          format: int32
-          example: 1
-        task_title:
+        problem_title:
           type: string
           example: "Task title"
+
+        position:
+          type: integer
+          format: int32
+          example: 1
 
         contest_id:
           type: integer
@@ -1153,8 +1146,8 @@ components:
       required:
         - id
 
-        - participant_id
-        - participant_name
+        - user_id
+        - username
 
         - solution
 
@@ -1165,9 +1158,10 @@ components:
         - memory_stat
         - language
 
-        - task_id
-        - task_position
-        - task_title
+        - problem_id
+        - problem_title
+
+        - position
 
         - contest_id
         - contest_title
@@ -1180,11 +1174,11 @@ components:
           format: int32
           example: 1
 
-        participant_id:
+        user_id:
           type: integer
           format: int32
           example: 1
-        participant_name:
+        username:
           type: string
           example: "user123"
 
@@ -1217,17 +1211,18 @@ components:
           format: int32
           example: 1
 
-        task_id:
+        problem_id:
           type: integer
           format: int32
           example: 1
-        task_position:
-          type: integer
-          format: int32
-          example: 1
-        task_title:
+        problem_title:
           type: string
           example: "Task title"
+
+        position:
+          type: integer
+          format: int32
+          example: 1
 
         contest_id:
           type: integer
@@ -1250,25 +1245,30 @@ components:
       properties:
         solution:
           $ref: '#/components/schemas/Solution'
-    Task:
+    GetMonitorResponse:
       type: object
       required:
-        - id
-        - position
-        - title
-        - time_limit
-        - memory_limit
-
-        - legend_html
-        - input_format_html
-        - output_format_html
-        - notes_html
-        - scoring_html
-
-        - created_at
-        - updated_at
+        - participants
+        - summary
       properties:
-        id:
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ParticipantsStat'
+        summary:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemStatSummary'
+    ProblemStatSummary:
+      type: object
+      required:
+        - problem_id
+        - position
+        - s_attempts
+        - f_attempts
+        - t_attempts
+      properties:
+        problem_id:
           type: integer
           format: int32
           example: 1
@@ -1276,119 +1276,71 @@ components:
           type: integer
           format: int32
           example: 1
-        title:
-          type: string
-          example: "Test task"
-        time_limit:
-          type: integer
-          format: int32
-          example: 1000
-        memory_limit:
-          type: integer
-          format: int32
-          example: 256
-
-        legend_html:
-          type: string
-        input_format_html:
-          type: string
-        output_format_html:
-          type: string
-        notes_html:
-          type: string
-        scoring_html:
-          type: string
-
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
-          type: string
-          format: date-time
-    GetTaskResponse:
-      type: object
-      required:
-        - task
-        - contest
-        - tasks
-      properties:
-        contest:
-          $ref: '#/components/schemas/Contest'
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/TasksListItem'
-        task:
-          $ref: '#/components/schemas/Task'
-    GetMonitorResponse:
-      type: object
-      required:
-        - contest
-        - tasks
-        - participants
-        - summary_per_problem
-      properties:
-        contest:
-          $ref: '#/components/schemas/Contest'
-        tasks:
-          type: array
-          items:
-            $ref: '#/components/schemas/TasksListItem'
-        participants:
-          type: array
-          items:
-            $ref: '#/components/schemas/ParticipantsStat'
-        summary_per_problem:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProblemStatSummary'
-    ProblemStatSummary:
-      type: object
-      required:
-        - id
-        - success
-        - total
-      properties:
-        id:
+        s_attempts:
           type: integer
           format: int32
           example: 1
-        success:
+        f_attempts:
           type: integer
           format: int32
-          example: 14
-        total:
+          example: 1
+        t_attempts:
           type: integer
           format: int32
-          example: 20
+          example: 1
     ParticipantsStat:
       type: object
       required:
-        - id
-        - name
-        - solved_in_total
-        - penalty_in_total
-        - solutions
+        - user_id
+        - username
+        - solved
+        - penalty
+        - attempts
       properties:
-        id:
+        user_id:
           type: integer
           format: int32
           example: 1
-        name:
+        username:
           type: string
-          example: "John Doe"
-        solved_in_total:
+          example: "user123"
+        solved:
           type: integer
           format: int32
-          example: 3
-        penalty_in_total:
+          example: 1
+        penalty:
           type: integer
           format: int32
-          example: 144
-        solutions:
+          example: 28
+        attempts:
           type: array
           items:
-            $ref: '#/components/schemas/SolutionsListItem'
+            $ref: '#/components/schemas/ProblemAttempts'
+    ProblemAttempts:
+      type: object
+      required:
+        - problem_id
+        - failed_attempts
+        - state
+        - position
+      properties:
+        problem_id:
+          type: integer
+          format: int32
+          example: 1
+        position:
+          type: integer
+          format: int32
+          example: 1
+        failed_attempts:
+          type: integer
+          format: int32
+          example: 1
+        state:
+          type: integer
+          format: int32
+          nullable: true
+          example: 1
     CreateUserRequest:
       type: object
       required:
@@ -1401,15 +1353,6 @@ components:
         password:
           type: string
           example: password123
-    CreateUserResponse:
-      type: object
-      required:
-        - id
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 13
     GetUserResponse:
       type: object
       required:
@@ -1433,7 +1376,7 @@ components:
         - id
         - username
         - createdAt
-        - modifiedAt
+        - updatedAt
         - role
       properties:
         id:
@@ -1446,7 +1389,7 @@ components:
         createdAt:
           type: string
           format: date-time
-        modifiedAt:
+        updatedAt:
           type: string
           format: date-time
         role:
