@@ -457,7 +457,7 @@ paths:
             type: integer
             format: int32
           example: 10
-        - name: contest_id
+        - name: contestId
           in: query
           schema:
             type: integer
@@ -469,7 +469,7 @@ paths:
             type: integer
             format: int32
           example: 1
-        - name: problem_id
+        - name: problemId
           in: query
           schema:
             type: integer
