@@ -1041,9 +1041,12 @@ components:
     ListSolutionsResponse:
       type: object
       required:
+        - access-token
         - solutions
         - pagination
       properties:
+        access-token:
+          type: string
         solutions:
           type: array
           items:
