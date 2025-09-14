@@ -1,0 +1,11 @@
+{
+  "name": "contracts",
+  "packageManager": "npm@latest",
+  "scripts": {
+    "gen": "apigen-ts ./tester/v1/openapi.yaml ./tester/v1/tester.ts"
+  },
+  "devDependencies": {
+    "apigen-ts": "^1.2.1",
+    "typescript": "^5.9.2"
+  }
+}
