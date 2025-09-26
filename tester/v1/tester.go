@@ -14,7 +14,6 @@ import (
 )
 
 const (
-	BasicAuthScopes  = "BasicAuth.Scopes"
 	BearerAuthScopes = "bearerAuth.Scopes"
 )
 
@@ -113,11 +112,6 @@ type ListProblemsResponse struct {
 	Problems   []ProblemsListItem `json:"problems"`
 }
 
-// ListSessionsResponse defines model for ListSessionsResponse.
-type ListSessionsResponse struct {
-	Sessions []Session `json:"sessions"`
-}
-
 // ListSolutionsResponse defines model for ListSolutionsResponse.
 type ListSolutionsResponse struct {
 	AccessToken string              `json:"access-token"`
@@ -191,17 +185,6 @@ type ProblemsListItem struct {
 	TimeLimit   int32     `json:"time_limit"`
 	Title       string    `json:"title"`
 	UpdatedAt   time.Time `json:"updated_at"`
-}
-
-// Session defines model for Session.
-type Session struct {
-	CreatedAt time.Time `json:"createdAt"`
-	ExpiresAt time.Time `json:"expiresAt"`
-	Id        string    `json:"id"`
-	Ip        string    `json:"ip"`
-	Role      int32     `json:"role"`
-	UserAgent string    `json:"userAgent"`
-	UserId    int32     `json:"userId"`
 }
 
 // Solution defines model for Solution.
@@ -376,21 +359,6 @@ type UpdateUserJSONRequestBody = UpdateUserRequest
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 
-	// (POST /auth/login)
-	Login(c *fiber.Ctx) error
-
-	// (POST /auth/logout)
-	Logout(c *fiber.Ctx) error
-
-	// (POST /auth/refresh)
-	Refresh(c *fiber.Ctx) error
-
-	// (GET /auth/sessions)
-	ListSessions(c *fiber.Ctx) error
-
-	// (POST /auth/terminate)
-	Terminate(c *fiber.Ctx) error
-
 	// (GET /contests)
 	ListContests(c *fiber.Ctx, params ListContestsParams) error
 
@@ -476,46 +444,6 @@ type ServerInterfaceWrapper struct {
 }
 
 type MiddlewareFunc fiber.Handler
-
-// Login operation middleware
-func (siw *ServerInterfaceWrapper) Login(c *fiber.Ctx) error {
-
-	c.Context().SetUserValue(BasicAuthScopes, []string{})
-
-	return siw.Handler.Login(c)
-}
-
-// Logout operation middleware
-func (siw *ServerInterfaceWrapper) Logout(c *fiber.Ctx) error {
-
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
-
-	return siw.Handler.Logout(c)
-}
-
-// Refresh operation middleware
-func (siw *ServerInterfaceWrapper) Refresh(c *fiber.Ctx) error {
-
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
-
-	return siw.Handler.Refresh(c)
-}
-
-// ListSessions operation middleware
-func (siw *ServerInterfaceWrapper) ListSessions(c *fiber.Ctx) error {
-
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
-
-	return siw.Handler.ListSessions(c)
-}
-
-// Terminate operation middleware
-func (siw *ServerInterfaceWrapper) Terminate(c *fiber.Ctx) error {
-
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
-
-	return siw.Handler.Terminate(c)
-}
 
 // ListContests operation middleware
 func (siw *ServerInterfaceWrapper) ListContests(c *fiber.Ctx) error {
@@ -1401,16 +1329,6 @@ func RegisterHandlersWithOptions(router fiber.Router, si ServerInterface, option
 	for _, m := range options.Middlewares {
 		router.Use(fiber.Handler(m))
 	}
-
-	router.Post(options.BaseURL+"/auth/login", wrapper.Login)
-
-	router.Post(options.BaseURL+"/auth/logout", wrapper.Logout)
-
-	router.Post(options.BaseURL+"/auth/refresh", wrapper.Refresh)
-
-	router.Get(options.BaseURL+"/auth/sessions", wrapper.ListSessions)
-
-	router.Post(options.BaseURL+"/auth/terminate", wrapper.Terminate)
 
 	router.Get(options.BaseURL+"/contests", wrapper.ListContests)
 

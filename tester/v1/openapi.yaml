@@ -540,57 +540,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetMonitorResponse'
-  /auth/terminate:
-    post:
-      operationId: Terminate
-      security:
-        - bearerAuth: [ ]
-      responses:
-        "200":
-          description: OK
-          content: { }
-  /auth/login:
-    post:
-      operationId: Login
-      security:
-        - BasicAuth: [ ]
-      responses:
-        "200":
-          description: OK
-          content: { }
-        "404":
-          description: Not Found
-          content: { }
-  /auth/logout:
-    post:
-      operationId: Logout
-      security:
-        - bearerAuth: [ ]
-      responses:
-        "200":
-          description: OK
-          content: { }
-  /auth/refresh:
-    post:
-      operationId: Refresh
-      security:
-        - bearerAuth: [ ]
-      responses:
-        "200":
-          description: OK
-          content: { }
-  /auth/sessions:
-    get:
-      operationId: ListSessions
-      security:
-        - bearerAuth: [ ]
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListSessionsResponse'
   /users:
     post:
       operationId: CreateUser

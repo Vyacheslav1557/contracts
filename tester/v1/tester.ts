@@ -274,26 +274,6 @@ export class ApiClient {
       );
     },
 
-    terminate: () => {
-      return this.Fetch<void>("post", "/auth/terminate", {});
-    },
-
-    login: () => {
-      return this.Fetch<void>("post", "/auth/login", {});
-    },
-
-    logout: () => {
-      return this.Fetch<void>("post", "/auth/logout", {});
-    },
-
-    refresh: () => {
-      return this.Fetch<void>("post", "/auth/refresh", {});
-    },
-
-    listSessions: () => {
-      return this.Fetch<ListSessionsResponse>("get", "/auth/sessions", {});
-    },
-
     listUsers: (search: {
       page?: number;
       pageSize?: number;
