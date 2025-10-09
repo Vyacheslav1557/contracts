@@ -15,6 +15,7 @@ import (
 
 const (
 	BearerAuthScopes = "bearerAuth.Scopes"
+	CookieAuthScopes = "cookieAuth.Scopes"
 )
 
 // Contest defines model for Contest.
@@ -55,12 +56,6 @@ type ContestProblemListItem struct {
 // CreateSolutionRequest defines model for CreateSolutionRequest.
 type CreateSolutionRequest struct {
 	Solution openapi_types.File `json:"solution"`
-}
-
-// CreateUserRequest defines model for CreateUserRequest.
-type CreateUserRequest struct {
-	Password string `json:"password"`
-	Username string `json:"username"`
 }
 
 // CreationResponse defines model for CreationResponse.
@@ -245,12 +240,6 @@ type UpdateProblemRequest struct {
 	Title        *string `json:"title,omitempty"`
 }
 
-// UpdateUserRequest defines model for UpdateUserRequest.
-type UpdateUserRequest struct {
-	Role     *int32  `json:"role,omitempty"`
-	Username *string `json:"username,omitempty"`
-}
-
 // UploadProblemRequest defines model for UploadProblemRequest.
 type UploadProblemRequest struct {
 	Archive openapi_types.File `json:"archive"`
@@ -258,11 +247,13 @@ type UploadProblemRequest struct {
 
 // User defines model for User.
 type User struct {
-	CreatedAt time.Time `json:"createdAt"`
-	Id        int32     `json:"id"`
-	Role      int32     `json:"role"`
-	UpdatedAt time.Time `json:"updatedAt"`
-	Username  string    `json:"username"`
+	// CanEdit Whether the current user can edit this profile
+	CanEdit   *bool              `json:"canEdit,omitempty"`
+	CreatedAt time.Time          `json:"createdAt"`
+	Id        openapi_types.UUID `json:"id"`
+	Role      string             `json:"role"`
+	UpdatedAt time.Time          `json:"updatedAt"`
+	Username  string             `json:"username"`
 }
 
 // ListContestsParams defines parameters for ListContests.
@@ -329,15 +320,6 @@ type CreateSolutionParams struct {
 	Language  int32 `form:"language" json:"language"`
 }
 
-// ListUsersParams defines parameters for ListUsers.
-type ListUsersParams struct {
-	Page     int32   `form:"page" json:"page"`
-	PageSize int32   `form:"pageSize" json:"pageSize"`
-	Order    *int32  `form:"order,omitempty" json:"order,omitempty"`
-	Role     *int32  `form:"role,omitempty" json:"role,omitempty"`
-	Username *string `form:"username,omitempty" json:"username,omitempty"`
-}
-
 // UpdateContestJSONRequestBody defines body for UpdateContest for application/json ContentType.
 type UpdateContestJSONRequestBody = UpdateContestRequest
 
@@ -349,12 +331,6 @@ type UploadProblemMultipartRequestBody = UploadProblemRequest
 
 // CreateSolutionMultipartRequestBody defines body for CreateSolution for multipart/form-data ContentType.
 type CreateSolutionMultipartRequestBody = CreateSolutionRequest
-
-// CreateUserJSONRequestBody defines body for CreateUser for application/json ContentType.
-type CreateUserJSONRequestBody = CreateUserRequest
-
-// UpdateUserJSONRequestBody defines body for UpdateUser for application/json ContentType.
-type UpdateUserJSONRequestBody = UpdateUserRequest
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
@@ -395,6 +371,9 @@ type ServerInterface interface {
 	// (GET /contests/{contest_id}/problems/{problem_id})
 	GetContestProblem(c *fiber.Ctx, contestId int32, problemId int32) error
 
+	// (GET /health)
+	GetHealth(c *fiber.Ctx) error
+
 	// (GET /problems)
 	ListProblems(c *fiber.Ctx, params ListProblemsParams) error
 
@@ -422,20 +401,11 @@ type ServerInterface interface {
 	// (GET /solutions/{solution_id})
 	GetSolution(c *fiber.Ctx, solutionId int32) error
 
-	// (GET /users)
-	ListUsers(c *fiber.Ctx, params ListUsersParams) error
-
-	// (POST /users)
-	CreateUser(c *fiber.Ctx) error
-
-	// (DELETE /users/{id})
-	DeleteUser(c *fiber.Ctx, id int32) error
+	// (GET /users/me)
+	GetMe(c *fiber.Ctx) error
 
 	// (GET /users/{id})
-	GetUser(c *fiber.Ctx, id int32) error
-
-	// (PATCH /users/{id})
-	UpdateUser(c *fiber.Ctx, id int32) error
+	GetUser(c *fiber.Ctx, id openapi_types.UUID) error
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -835,6 +805,12 @@ func (siw *ServerInterfaceWrapper) GetContestProblem(c *fiber.Ctx) error {
 	return siw.Handler.GetContestProblem(c, contestId, problemId)
 }
 
+// GetHealth operation middleware
+func (siw *ServerInterfaceWrapper) GetHealth(c *fiber.Ctx) error {
+
+	return siw.Handler.GetHealth(c)
+}
+
 // ListProblems operation middleware
 func (siw *ServerInterfaceWrapper) ListProblems(c *fiber.Ctx) error {
 
@@ -1177,100 +1153,12 @@ func (siw *ServerInterfaceWrapper) GetSolution(c *fiber.Ctx) error {
 	return siw.Handler.GetSolution(c, solutionId)
 }
 
-// ListUsers operation middleware
-func (siw *ServerInterfaceWrapper) ListUsers(c *fiber.Ctx) error {
+// GetMe operation middleware
+func (siw *ServerInterfaceWrapper) GetMe(c *fiber.Ctx) error {
 
-	var err error
+	c.Context().SetUserValue(CookieAuthScopes, []string{})
 
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
-
-	// Parameter object where we will unmarshal all parameters from the context
-	var params ListUsersParams
-
-	var query url.Values
-	query, err = url.ParseQuery(string(c.Request().URI().QueryString()))
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for query string: %w", err).Error())
-	}
-
-	// ------------- Required query parameter "page" -------------
-
-	if paramValue := c.Query("page"); paramValue != "" {
-
-	} else {
-		err = fmt.Errorf("Query argument page is required, but not found")
-		c.Status(fiber.StatusBadRequest).JSON(err)
-		return err
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "page", query, &params.Page)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter page: %w", err).Error())
-	}
-
-	// ------------- Required query parameter "pageSize" -------------
-
-	if paramValue := c.Query("pageSize"); paramValue != "" {
-
-	} else {
-		err = fmt.Errorf("Query argument pageSize is required, but not found")
-		c.Status(fiber.StatusBadRequest).JSON(err)
-		return err
-	}
-
-	err = runtime.BindQueryParameter("form", true, true, "pageSize", query, &params.PageSize)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter pageSize: %w", err).Error())
-	}
-
-	// ------------- Optional query parameter "order" -------------
-
-	err = runtime.BindQueryParameter("form", true, false, "order", query, &params.Order)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter order: %w", err).Error())
-	}
-
-	// ------------- Optional query parameter "role" -------------
-
-	err = runtime.BindQueryParameter("form", true, false, "role", query, &params.Role)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter role: %w", err).Error())
-	}
-
-	// ------------- Optional query parameter "username" -------------
-
-	err = runtime.BindQueryParameter("form", true, false, "username", query, &params.Username)
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter username: %w", err).Error())
-	}
-
-	return siw.Handler.ListUsers(c, params)
-}
-
-// CreateUser operation middleware
-func (siw *ServerInterfaceWrapper) CreateUser(c *fiber.Ctx) error {
-
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
-
-	return siw.Handler.CreateUser(c)
-}
-
-// DeleteUser operation middleware
-func (siw *ServerInterfaceWrapper) DeleteUser(c *fiber.Ctx) error {
-
-	var err error
-
-	// ------------- Path parameter "id" -------------
-	var id int32
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Params("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter id: %w", err).Error())
-	}
-
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
-
-	return siw.Handler.DeleteUser(c, id)
+	return siw.Handler.GetMe(c)
 }
 
 // GetUser operation middleware
@@ -1279,34 +1167,16 @@ func (siw *ServerInterfaceWrapper) GetUser(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "id" -------------
-	var id int32
+	var id openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Params("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter id: %w", err).Error())
 	}
 
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
+	c.Context().SetUserValue(CookieAuthScopes, []string{})
 
 	return siw.Handler.GetUser(c, id)
-}
-
-// UpdateUser operation middleware
-func (siw *ServerInterfaceWrapper) UpdateUser(c *fiber.Ctx) error {
-
-	var err error
-
-	// ------------- Path parameter "id" -------------
-	var id int32
-
-	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Params("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
-	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter id: %w", err).Error())
-	}
-
-	c.Context().SetUserValue(BearerAuthScopes, []string{})
-
-	return siw.Handler.UpdateUser(c, id)
 }
 
 // FiberServerOptions provides options for the Fiber server.
@@ -1354,6 +1224,8 @@ func RegisterHandlersWithOptions(router fiber.Router, si ServerInterface, option
 
 	router.Get(options.BaseURL+"/contests/:contest_id/problems/:problem_id", wrapper.GetContestProblem)
 
+	router.Get(options.BaseURL+"/health", wrapper.GetHealth)
+
 	router.Get(options.BaseURL+"/problems", wrapper.ListProblems)
 
 	router.Post(options.BaseURL+"/problems", wrapper.CreateProblem)
@@ -1372,14 +1244,8 @@ func RegisterHandlersWithOptions(router fiber.Router, si ServerInterface, option
 
 	router.Get(options.BaseURL+"/solutions/:solution_id", wrapper.GetSolution)
 
-	router.Get(options.BaseURL+"/users", wrapper.ListUsers)
-
-	router.Post(options.BaseURL+"/users", wrapper.CreateUser)
-
-	router.Delete(options.BaseURL+"/users/:id", wrapper.DeleteUser)
+	router.Get(options.BaseURL+"/users/me", wrapper.GetMe)
 
 	router.Get(options.BaseURL+"/users/:id", wrapper.GetUser)
-
-	router.Patch(options.BaseURL+"/users/:id", wrapper.UpdateUser)
 
 }

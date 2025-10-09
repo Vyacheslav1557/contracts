@@ -540,80 +540,28 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetMonitorResponse'
-  /users:
-    post:
-      operationId: CreateUser
-      security:
-        - bearerAuth: [ ]
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateUserRequest'
-        required: true
+  /health:
+    get:
+      operationId: GetHealth
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreationResponse'
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+                  message:
+                    type: string
+                    example: "Backend is running"
+  /users/me:
     get:
-      operationId: ListUsers
-      parameters:
-        - name: page
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: pageSize
-          in: query
-          required: true
-          schema:
-            type: integer
-            format: int32
-          example: 20
-        - name: order
-          in: query
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: role
-          in: query
-          schema:
-            type: integer
-            format: int32
-          example: 1
-        - name: username
-          in: query
-          schema:
-            type: string
-          example: user123
+      operationId: GetMe
       security:
-        - bearerAuth: [ ]
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ListUsersResponse'
-  /users/{id}:
-    get:
-      operationId: GetUser
-      security:
-        - bearerAuth: [ ]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-          example: 2
+        - cookieAuth: []
       responses:
         "200":
           description: OK
@@ -621,44 +569,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GetUserResponse'
-    delete:
-      operationId: DeleteUser
+  /users/{id}:
+    get:
+      operationId: GetUser
       security:
-        - bearerAuth: [ ]
+        - cookieAuth: []
       parameters:
         - name: id
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
-          example: 3
+            type: string
+            format: uuid
       responses:
         "200":
           description: OK
-          content: { }
-    patch:
-      operationId: UpdateUser
-      security:
-        - bearerAuth: [ ]
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-            format: int32
-          example: 3
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateUserRequest'
-        required: true
-      responses:
-        "200":
-          description: OK
-          content: { }
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
 components:
   schemas:
     CreationResponse:
@@ -1293,18 +1222,6 @@ components:
           format: int32
           nullable: true
           example: 1
-    CreateUserRequest:
-      type: object
-      required:
-        - username
-        - password
-      properties:
-        username:
-          type: string
-          example: user123
-        password:
-          type: string
-          example: password123
     GetUserResponse:
       type: object
       required:
@@ -1312,16 +1229,6 @@ components:
       properties:
         user:
           $ref: '#/components/schemas/User'
-    UpdateUserRequest:
-      type: object
-      properties:
-        username:
-          type: string
-          example: user123
-        role:
-          type: integer
-          format: int32
-          example: 1
     User:
       type: object
       required:
@@ -1332,9 +1239,8 @@ components:
         - role
       properties:
         id:
-          type: integer
-          format: int32
-          example: 13
+          type: string
+          format: uuid
         username:
           type: string
           example: user123
@@ -1345,51 +1251,10 @@ components:
           type: string
           format: date-time
         role:
-          type: integer
-          format: int32
-          example: 1
-    Session:
-      type: object
-      required:
-        - id
-        - userId
-        - role
-        - createdAt
-        - expiresAt
-        - userAgent
-        - ip
-      properties:
-        id:
           type: string
-        userId:
-          type: integer
-          format: int32
-          example: 13
-        role:
-          type: integer
-          format: int32
-          example: 1
-        createdAt:
-          type: string
-          format: date-time
-        expiresAt:
-          type: string
-          format: date-time
-        userAgent:
-          type: string
-          example: Mozilla/5.0
-        ip:
-          type: string
-          example: 154.23.50.1
-    ListSessionsResponse:
-      type: object
-      required:
-        - sessions
-      properties:
-        sessions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Session'
+        canEdit:
+          type: boolean
+          description: Whether the current user can edit this profile
     ListUsersResponse:
       type: object
       required:
@@ -1407,3 +1272,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: ory_kratos_session

@@ -274,30 +274,19 @@ export class ApiClient {
       );
     },
 
-    listUsers: (search: {
-      page?: number;
-      pageSize?: number;
-      order?: number;
-      role?: number;
-      username?: string;
-    }) => {
-      return this.Fetch<ListUsersResponse>("get", "/users", { search });
+    getHealth: () => {
+      return this.Fetch<{
+        status?: string;
+        message?: string;
+      }>("get", "/health", {});
     },
 
-    createUser: (body: CreateUserRequest) => {
-      return this.Fetch<CreationResponse>("post", "/users", { body });
+    getMe: () => {
+      return this.Fetch<GetUserResponse>("get", "/users/me", {});
     },
 
-    getUser: (id: number) => {
+    getUser: (id: string) => {
       return this.Fetch<GetUserResponse>("get", `/users/${id}`, {});
-    },
-
-    updateUser: (id: number, body: UpdateUserRequest) => {
-      return this.Fetch<void>("patch", `/users/${id}`, { body });
-    },
-
-    deleteUser: (id: number) => {
-      return this.Fetch<void>("delete", `/users/${id}`, {});
     },
   };
 }
@@ -338,11 +327,6 @@ export type CreateSolutionRequest = {
   solution: File;
 };
 
-export type CreateUserRequest = {
-  username: string;
-  password: string;
-};
-
 export type CreationResponse = {
   id: number;
 };
@@ -381,10 +365,6 @@ export type ListContestsResponse = {
 export type ListProblemsResponse = {
   problems: ProblemsListItem[];
   pagination: Pagination;
-};
-
-export type ListSessionsResponse = {
-  sessions: Session[];
 };
 
 export type ListSolutionsResponse = {
@@ -454,16 +434,6 @@ export type ProblemsListItem = {
   updated_at: string;
 };
 
-export type Session = {
-  id: string;
-  userId: number;
-  role: number;
-  createdAt: string;
-  expiresAt: string;
-  userAgent: string;
-  ip: string;
-};
-
 export type Solution = {
   id: number;
   user_id: number;
@@ -518,19 +488,15 @@ export type UpdateProblemRequest = {
   time_limit?: number;
 };
 
-export type UpdateUserRequest = {
-  username?: string;
-  role?: number;
-};
-
 export type UploadProblemRequest = {
   archive: File;
 };
 
 export type User = {
-  id: number;
+  id: string;
   username: string;
   createdAt: string;
   updatedAt: string;
-  role: number;
+  role: string;
+  canEdit?: boolean;
 };
