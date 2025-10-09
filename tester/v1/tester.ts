@@ -207,7 +207,7 @@ export class ApiClient {
     createParticipant: (
       contest_id: number,
       search: {
-        user_id?: number;
+        user_id?: string;
       },
     ) => {
       return this.Fetch<CreationResponse>(
@@ -220,7 +220,7 @@ export class ApiClient {
     deleteParticipant: (
       contest_id: number,
       search: {
-        user_id?: number;
+        user_id?: string;
       },
     ) => {
       return this.Fetch<void>(
@@ -234,7 +234,7 @@ export class ApiClient {
       page?: number;
       pageSize?: number;
       contestId?: number;
-      userId?: number;
+      userId?: string;
       problemId?: number;
       state?: number;
       order?: number;
@@ -384,7 +384,7 @@ export type Pagination = {
 };
 
 export type ParticipantsStat = {
-  user_id: number;
+  user_id: string;
   username: string;
   solved: number;
   penalty: number;
@@ -436,7 +436,7 @@ export type ProblemsListItem = {
 
 export type Solution = {
   id: number;
-  user_id: number;
+  user_id: string;
   username: string;
   solution: string;
   state: number;
@@ -456,7 +456,7 @@ export type Solution = {
 
 export type SolutionsListItem = {
   id: number;
-  user_id: number;
+  user_id: string;
   username: string;
   state: number;
   score: number;
@@ -498,5 +498,4 @@ export type User = {
   createdAt: string;
   updatedAt: string;
   role: string;
-  canEdit?: boolean;
 };

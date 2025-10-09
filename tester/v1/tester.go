@@ -128,11 +128,11 @@ type Pagination struct {
 
 // ParticipantsStat defines model for ParticipantsStat.
 type ParticipantsStat struct {
-	Attempts []ProblemAttempts `json:"attempts"`
-	Penalty  int32             `json:"penalty"`
-	Solved   int32             `json:"solved"`
-	UserId   int32             `json:"user_id"`
-	Username string            `json:"username"`
+	Attempts []ProblemAttempts  `json:"attempts"`
+	Penalty  int32              `json:"penalty"`
+	Solved   int32              `json:"solved"`
+	UserId   openapi_types.UUID `json:"user_id"`
+	Username string             `json:"username"`
 }
 
 // Problem defines model for Problem.
@@ -184,43 +184,43 @@ type ProblemsListItem struct {
 
 // Solution defines model for Solution.
 type Solution struct {
-	ContestId    int32     `json:"contest_id"`
-	ContestTitle string    `json:"contest_title"`
-	CreatedAt    time.Time `json:"created_at"`
-	Id           int32     `json:"id"`
-	Language     int32     `json:"language"`
-	MemoryStat   int32     `json:"memory_stat"`
-	Penalty      int32     `json:"penalty"`
-	Position     int32     `json:"position"`
-	ProblemId    int32     `json:"problem_id"`
-	ProblemTitle string    `json:"problem_title"`
-	Score        int32     `json:"score"`
-	Solution     string    `json:"solution"`
-	State        int32     `json:"state"`
-	TimeStat     int32     `json:"time_stat"`
-	UpdatedAt    time.Time `json:"updated_at"`
-	UserId       int32     `json:"user_id"`
-	Username     string    `json:"username"`
+	ContestId    int32              `json:"contest_id"`
+	ContestTitle string             `json:"contest_title"`
+	CreatedAt    time.Time          `json:"created_at"`
+	Id           int32              `json:"id"`
+	Language     int32              `json:"language"`
+	MemoryStat   int32              `json:"memory_stat"`
+	Penalty      int32              `json:"penalty"`
+	Position     int32              `json:"position"`
+	ProblemId    int32              `json:"problem_id"`
+	ProblemTitle string             `json:"problem_title"`
+	Score        int32              `json:"score"`
+	Solution     string             `json:"solution"`
+	State        int32              `json:"state"`
+	TimeStat     int32              `json:"time_stat"`
+	UpdatedAt    time.Time          `json:"updated_at"`
+	UserId       openapi_types.UUID `json:"user_id"`
+	Username     string             `json:"username"`
 }
 
 // SolutionsListItem defines model for SolutionsListItem.
 type SolutionsListItem struct {
-	ContestId    int32     `json:"contest_id"`
-	ContestTitle string    `json:"contest_title"`
-	CreatedAt    time.Time `json:"created_at"`
-	Id           int32     `json:"id"`
-	Language     int32     `json:"language"`
-	MemoryStat   int32     `json:"memory_stat"`
-	Penalty      int32     `json:"penalty"`
-	Position     int32     `json:"position"`
-	ProblemId    int32     `json:"problem_id"`
-	ProblemTitle string    `json:"problem_title"`
-	Score        int32     `json:"score"`
-	State        int32     `json:"state"`
-	TimeStat     int32     `json:"time_stat"`
-	UpdatedAt    time.Time `json:"updated_at"`
-	UserId       int32     `json:"user_id"`
-	Username     string    `json:"username"`
+	ContestId    int32              `json:"contest_id"`
+	ContestTitle string             `json:"contest_title"`
+	CreatedAt    time.Time          `json:"created_at"`
+	Id           int32              `json:"id"`
+	Language     int32              `json:"language"`
+	MemoryStat   int32              `json:"memory_stat"`
+	Penalty      int32              `json:"penalty"`
+	Position     int32              `json:"position"`
+	ProblemId    int32              `json:"problem_id"`
+	ProblemTitle string             `json:"problem_title"`
+	Score        int32              `json:"score"`
+	State        int32              `json:"state"`
+	TimeStat     int32              `json:"time_stat"`
+	UpdatedAt    time.Time          `json:"updated_at"`
+	UserId       openapi_types.UUID `json:"user_id"`
+	Username     string             `json:"username"`
 }
 
 // UpdateContestRequest defines model for UpdateContestRequest.
@@ -247,8 +247,6 @@ type UploadProblemRequest struct {
 
 // User defines model for User.
 type User struct {
-	// CanEdit Whether the current user can edit this profile
-	CanEdit   *bool              `json:"canEdit,omitempty"`
 	CreatedAt time.Time          `json:"createdAt"`
 	Id        openapi_types.UUID `json:"id"`
 	Role      string             `json:"role"`
@@ -269,7 +267,7 @@ type CreateContestParams struct {
 
 // DeleteParticipantParams defines parameters for DeleteParticipant.
 type DeleteParticipantParams struct {
-	UserId int32 `form:"user_id" json:"user_id"`
+	UserId openapi_types.UUID `form:"user_id" json:"user_id"`
 }
 
 // ListParticipantsParams defines parameters for ListParticipants.
@@ -280,7 +278,7 @@ type ListParticipantsParams struct {
 
 // CreateParticipantParams defines parameters for CreateParticipant.
 type CreateParticipantParams struct {
-	UserId int32 `form:"user_id" json:"user_id"`
+	UserId openapi_types.UUID `form:"user_id" json:"user_id"`
 }
 
 // CreateContestProblemParams defines parameters for CreateContestProblem.
@@ -303,14 +301,14 @@ type CreateProblemParams struct {
 
 // ListSolutionsParams defines parameters for ListSolutions.
 type ListSolutionsParams struct {
-	Page      int32  `form:"page" json:"page"`
-	PageSize  int32  `form:"pageSize" json:"pageSize"`
-	ContestId *int32 `form:"contestId,omitempty" json:"contestId,omitempty"`
-	UserId    *int32 `form:"userId,omitempty" json:"userId,omitempty"`
-	ProblemId *int32 `form:"problemId,omitempty" json:"problemId,omitempty"`
-	State     *int32 `form:"state,omitempty" json:"state,omitempty"`
-	Order     *int32 `form:"order,omitempty" json:"order,omitempty"`
-	Language  *int32 `form:"language,omitempty" json:"language,omitempty"`
+	Page      int32               `form:"page" json:"page"`
+	PageSize  int32               `form:"pageSize" json:"pageSize"`
+	ContestId *int32              `form:"contestId,omitempty" json:"contestId,omitempty"`
+	UserId    *openapi_types.UUID `form:"userId,omitempty" json:"userId,omitempty"`
+	ProblemId *int32              `form:"problemId,omitempty" json:"problemId,omitempty"`
+	State     *int32              `form:"state,omitempty" json:"state,omitempty"`
+	Order     *int32              `form:"order,omitempty" json:"order,omitempty"`
+	Language  *int32              `form:"language,omitempty" json:"language,omitempty"`
 }
 
 // CreateSolutionParams defines parameters for CreateSolution.

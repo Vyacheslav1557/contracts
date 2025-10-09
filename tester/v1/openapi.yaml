@@ -366,9 +366,8 @@ paths:
           in: query
           required: true
           schema:
-            type: integer
-            format: int32
-          example: 1
+            type: string
+            format: uuid
       responses:
         "200":
           description: OK
@@ -385,9 +384,8 @@ paths:
           in: query
           required: true
           schema:
-            type: integer
-            format: int32
-          example: 1
+            type: string
+            format: uuid
         - name: contest_id
           in: path
           required: true
@@ -466,9 +464,8 @@ paths:
         - name: userId
           in: query
           schema:
-            type: integer
-            format: int32
-          example: 1
+            type: string
+            format: uuid
         - name: problemId
           in: query
           schema:
@@ -963,9 +960,8 @@ components:
           example: 1
 
         user_id:
-          type: integer
-          format: int32
-          example: 1
+          type: string
+          format: uuid
         username:
           type: string
           example: "user123"
@@ -1056,9 +1052,8 @@ components:
           example: 1
 
         user_id:
-          type: integer
-          format: int32
-          example: 1
+          type: string
+          format: uuid
         username:
           type: string
           example: "user123"
@@ -1179,9 +1174,8 @@ components:
         - attempts
       properties:
         user_id:
-          type: integer
-          format: int32
-          example: 1
+          type: string
+          format: uuid
         username:
           type: string
           example: "user123"
@@ -1252,9 +1246,6 @@ components:
           format: date-time
         role:
           type: string
-        canEdit:
-          type: boolean
-          description: Whether the current user can edit this profile
     ListUsersResponse:
       type: object
       required:
