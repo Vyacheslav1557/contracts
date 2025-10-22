@@ -318,6 +318,14 @@ type CreateSolutionParams struct {
 	Language  int32 `form:"language" json:"language"`
 }
 
+// GetUsersParams defines parameters for GetUsers.
+type GetUsersParams struct {
+	Page     int32   `form:"page" json:"page"`
+	PageSize int32   `form:"pageSize" json:"pageSize"`
+	Search   *string `form:"search,omitempty" json:"search,omitempty"`
+	Role     *string `form:"role,omitempty" json:"role,omitempty"`
+}
+
 // UpdateContestJSONRequestBody defines body for UpdateContest for application/json ContentType.
 type UpdateContestJSONRequestBody = UpdateContestRequest
 
@@ -398,6 +406,9 @@ type ServerInterface interface {
 
 	// (GET /solutions/{solution_id})
 	GetSolution(c *fiber.Ctx, solutionId int32) error
+
+	// (GET /users)
+	GetUsers(c *fiber.Ctx, params GetUsersParams) error
 
 	// (GET /users/me)
 	GetMe(c *fiber.Ctx) error
@@ -1151,6 +1162,69 @@ func (siw *ServerInterfaceWrapper) GetSolution(c *fiber.Ctx) error {
 	return siw.Handler.GetSolution(c, solutionId)
 }
 
+// GetUsers operation middleware
+func (siw *ServerInterfaceWrapper) GetUsers(c *fiber.Ctx) error {
+
+	var err error
+
+	c.Context().SetUserValue(CookieAuthScopes, []string{})
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUsersParams
+
+	var query url.Values
+	query, err = url.ParseQuery(string(c.Request().URI().QueryString()))
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for query string: %w", err).Error())
+	}
+
+	// ------------- Required query parameter "page" -------------
+
+	if paramValue := c.Query("page"); paramValue != "" {
+
+	} else {
+		err = fmt.Errorf("Query argument page is required, but not found")
+		c.Status(fiber.StatusBadRequest).JSON(err)
+		return err
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "page", query, &params.Page)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter page: %w", err).Error())
+	}
+
+	// ------------- Required query parameter "pageSize" -------------
+
+	if paramValue := c.Query("pageSize"); paramValue != "" {
+
+	} else {
+		err = fmt.Errorf("Query argument pageSize is required, but not found")
+		c.Status(fiber.StatusBadRequest).JSON(err)
+		return err
+	}
+
+	err = runtime.BindQueryParameter("form", true, true, "pageSize", query, &params.PageSize)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter pageSize: %w", err).Error())
+	}
+
+	// ------------- Optional query parameter "search" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "search", query, &params.Search)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter search: %w", err).Error())
+	}
+
+	// ------------- Optional query parameter "role" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "role", query, &params.Role)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter role: %w", err).Error())
+	}
+
+	return siw.Handler.GetUsers(c, params)
+}
+
 // GetMe operation middleware
 func (siw *ServerInterfaceWrapper) GetMe(c *fiber.Ctx) error {
 
@@ -1241,6 +1315,8 @@ func RegisterHandlersWithOptions(router fiber.Router, si ServerInterface, option
 	router.Post(options.BaseURL+"/solutions", wrapper.CreateSolution)
 
 	router.Get(options.BaseURL+"/solutions/:solution_id", wrapper.GetSolution)
+
+	router.Get(options.BaseURL+"/users", wrapper.GetUsers)
 
 	router.Get(options.BaseURL+"/users/me", wrapper.GetMe)
 

@@ -285,6 +285,15 @@ export class ApiClient {
       return this.Fetch<GetUserResponse>("get", "/users/me", {});
     },
 
+    getUsers: (search: {
+      page?: number;
+      pageSize?: number;
+      search?: string;
+      role?: string;
+    }) => {
+      return this.Fetch<ListUsersResponse>("get", "/users", { search });
+    },
+
     getUser: (id: string) => {
       return this.Fetch<GetUserResponse>("get", `/users/${id}`, {});
     },

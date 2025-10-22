@@ -32,18 +32,18 @@ paths:
             format: int32
             example: 1
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListProblemsResponse'
+                $ref: "#/components/schemas/ListProblemsResponse"
     post:
       operationId: CreateProblem
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: title
           in: query
@@ -57,12 +57,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreationResponse'
+                $ref: "#/components/schemas/CreationResponse"
   /problems/{id}:
     get:
       operationId: GetProblem
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -77,11 +77,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetProblemResponse'
+                $ref: "#/components/schemas/GetProblemResponse"
     delete:
       operationId: DeleteProblem
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -93,11 +93,11 @@ paths:
       responses:
         "200":
           description: OK
-          content: { }
+          content: {}
     patch:
       operationId: UpdateProblem
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -111,15 +111,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateProblemRequest'
+              $ref: "#/components/schemas/UpdateProblemRequest"
       responses:
         "200":
           description: OK
-          content: { }
+          content: {}
     post:
       operationId: UploadProblem
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: id
           in: path
@@ -133,11 +133,11 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UploadProblemRequest'
+              $ref: "#/components/schemas/UploadProblemRequest"
       responses:
         "200":
           description: OK
-          content: { }
+          content: {}
 
   /contests:
     get:
@@ -158,14 +158,14 @@ paths:
             format: int32
           example: 10
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListContestsResponse'
+                $ref: "#/components/schemas/ListContestsResponse"
     post:
       operationId: CreateContest
       parameters:
@@ -176,19 +176,19 @@ paths:
             type: string
           example: "Contest 1"
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreationResponse'
+                $ref: "#/components/schemas/CreationResponse"
   /contests/{contest_id}:
     get:
       operationId: GetContest
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: contest_id
           in: path
@@ -203,11 +203,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetContestResponse'
+                $ref: "#/components/schemas/GetContestResponse"
     delete:
       operationId: DeleteContest
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: contest_id
           in: path
@@ -222,7 +222,7 @@ paths:
     patch:
       operationId: UpdateContest
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: contest_id
           in: path
@@ -236,7 +236,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateContestRequest'
+              $ref: "#/components/schemas/UpdateContestRequest"
       responses:
         "200":
           description: OK
@@ -244,7 +244,7 @@ paths:
     post:
       operationId: CreateContestProblem
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: contest_id
           in: path
@@ -266,12 +266,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreationResponse'
+                $ref: "#/components/schemas/CreationResponse"
   /contests/{contest_id}/problems/{problem_id}:
     get:
       operationId: GetContestProblem
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: problem_id
           in: path
@@ -293,11 +293,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetContestProblemResponse'
+                $ref: "#/components/schemas/GetContestProblemResponse"
     delete:
       operationId: DeleteContestProblem
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: problem_id
           in: path
@@ -320,7 +320,7 @@ paths:
     get:
       operationId: ListParticipants
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: contest_id
           in: path
@@ -349,11 +349,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListUsersResponse'
+                $ref: "#/components/schemas/ListUsersResponse"
     post:
       operationId: CreateParticipant
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: contest_id
           in: path
@@ -374,11 +374,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreationResponse'
+                $ref: "#/components/schemas/CreationResponse"
     delete:
       operationId: DeleteParticipant
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: user_id
           in: query
@@ -400,7 +400,7 @@ paths:
     post:
       operationId: CreateSolution
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: problem_id
           in: query
@@ -428,18 +428,18 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/CreateSolutionRequest'
+              $ref: "#/components/schemas/CreateSolutionRequest"
       responses:
         "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreationResponse'
+                $ref: "#/components/schemas/CreationResponse"
     get:
       operationId: ListSolutions
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: page
           in: query
@@ -496,12 +496,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListSolutionsResponse'
+                $ref: "#/components/schemas/ListSolutionsResponse"
   /solutions/{solution_id}:
     get:
       operationId: GetSolution
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: solution_id
           in: path
@@ -516,12 +516,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetSolutionResponse'
+                $ref: "#/components/schemas/GetSolutionResponse"
   /contests/{contest_id}/monitor:
     get:
       operationId: GetMonitor
       security:
-        - bearerAuth: [ ]
+        - bearerAuth: []
       parameters:
         - name: contest_id
           in: path
@@ -536,7 +536,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetMonitorResponse'
+                $ref: "#/components/schemas/GetMonitorResponse"
   /health:
     get:
       operationId: GetHealth
@@ -565,7 +565,44 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetUserResponse'
+                $ref: "#/components/schemas/GetUserResponse"
+  /users:
+    get:
+      operationId: GetUsers
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: page
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: 1
+        - name: pageSize
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int32
+          example: 10
+        - name: search
+          in: query
+          schema:
+            type: string
+          example: "john"
+        - name: role
+          in: query
+          schema:
+            type: string
+          example: "admin"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListUsersResponse"
   /users/{id}:
     get:
       operationId: GetUser
@@ -584,7 +621,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetUserResponse'
+                $ref: "#/components/schemas/GetUserResponse"
 components:
   schemas:
     CreationResponse:
@@ -713,16 +750,16 @@ components:
         problems:
           type: array
           items:
-            $ref: '#/components/schemas/ProblemsListItem'
+            $ref: "#/components/schemas/ProblemsListItem"
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
     GetProblemResponse:
       type: object
       required:
         - problem
       properties:
         problem:
-          $ref: '#/components/schemas/Problem'
+          $ref: "#/components/schemas/Problem"
     ContestProblem:
       type: object
       required:
@@ -785,7 +822,7 @@ components:
         - problem
       properties:
         problem:
-          $ref: '#/components/schemas/ContestProblem'
+          $ref: "#/components/schemas/ContestProblem"
     Contest:
       type: object
       required:
@@ -816,9 +853,9 @@ components:
         contests:
           type: array
           items:
-            $ref: '#/components/schemas/Contest'
+            $ref: "#/components/schemas/Contest"
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
     ContestProblemListItem:
       type: object
       required:
@@ -862,11 +899,11 @@ components:
         - problems
       properties:
         contest:
-          $ref: '#/components/schemas/Contest'
+          $ref: "#/components/schemas/Contest"
         problems:
           type: array
           items:
-            $ref: '#/components/schemas/ContestProblemListItem'
+            $ref: "#/components/schemas/ContestProblemListItem"
     UpdateProblemRequest:
       type: object
       properties:
@@ -925,9 +962,9 @@ components:
         solutions:
           type: array
           items:
-            $ref: '#/components/schemas/SolutionsListItem'
+            $ref: "#/components/schemas/SolutionsListItem"
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
     SolutionsListItem:
       type: object
       required:
@@ -1120,7 +1157,7 @@ components:
         - solution
       properties:
         solution:
-          $ref: '#/components/schemas/Solution'
+          $ref: "#/components/schemas/Solution"
     GetMonitorResponse:
       type: object
       required:
@@ -1130,11 +1167,11 @@ components:
         participants:
           type: array
           items:
-            $ref: '#/components/schemas/ParticipantsStat'
+            $ref: "#/components/schemas/ParticipantsStat"
         summary:
           type: array
           items:
-            $ref: '#/components/schemas/ProblemStatSummary'
+            $ref: "#/components/schemas/ProblemStatSummary"
     ProblemStatSummary:
       type: object
       required:
@@ -1190,7 +1227,7 @@ components:
         attempts:
           type: array
           items:
-            $ref: '#/components/schemas/ProblemAttempts'
+            $ref: "#/components/schemas/ProblemAttempts"
     ProblemAttempts:
       type: object
       required:
@@ -1222,7 +1259,7 @@ components:
         - user
       properties:
         user:
-          $ref: '#/components/schemas/User'
+          $ref: "#/components/schemas/User"
     User:
       type: object
       required:
@@ -1255,9 +1292,9 @@ components:
         users:
           type: array
           items:
-            $ref: '#/components/schemas/User'
+            $ref: "#/components/schemas/User"
         pagination:
-          $ref: '#/components/schemas/Pagination'
+          $ref: "#/components/schemas/Pagination"
   securitySchemes:
     bearerAuth:
       type: http
