@@ -149,7 +149,7 @@ export class ApiClient {
       return this.Fetch<CreationResponse>("post", "/contests", { search });
     },
 
-    getContest: (contest_id: number) => {
+    getContest: (contest_id: string) => {
       return this.Fetch<GetContestResponse>(
         "get",
         `/contests/${contest_id}`,
@@ -157,16 +157,16 @@ export class ApiClient {
       );
     },
 
-    updateContest: (contest_id: number, body: UpdateContestRequest) => {
+    updateContest: (contest_id: string, body: UpdateContestRequest) => {
       return this.Fetch<void>("patch", `/contests/${contest_id}`, { body });
     },
 
-    deleteContest: (contest_id: number) => {
+    deleteContest: (contest_id: string) => {
       return this.Fetch<void>("delete", `/contests/${contest_id}`, {});
     },
 
     createContestProblem: (
-      contest_id: number,
+      contest_id: string,
       search: {
         problem_id?: number;
       },
@@ -178,7 +178,7 @@ export class ApiClient {
       );
     },
 
-    getContestProblem: (problem_id: number, contest_id: number) => {
+    getContestProblem: (problem_id: number, contest_id: string) => {
       return this.Fetch<GetContestProblemResponse>(
         "get",
         `/contests/${contest_id}/problems/${problem_id}`,
@@ -186,7 +186,7 @@ export class ApiClient {
       );
     },
 
-    deleteContestProblem: (problem_id: number, contest_id: number) => {
+    deleteContestProblem: (problem_id: number, contest_id: string) => {
       return this.Fetch<void>(
         "delete",
         `/contests/${contest_id}/problems/${problem_id}`,
@@ -195,7 +195,7 @@ export class ApiClient {
     },
 
     listParticipants: (
-      contest_id: number,
+      contest_id: string,
       search: {
         page?: number;
         pageSize?: number;
@@ -209,7 +209,7 @@ export class ApiClient {
     },
 
     createParticipant: (
-      contest_id: number,
+      contest_id: string,
       search: {
         user_id?: string;
       },
@@ -222,7 +222,7 @@ export class ApiClient {
     },
 
     deleteParticipant: (
-      contest_id: number,
+      contest_id: string,
       search: {
         user_id?: string;
       },
@@ -251,7 +251,7 @@ export class ApiClient {
       body: CreateSolutionRequest,
       search: {
         problem_id?: number;
-        contest_id?: number;
+        contest_id?: string;
         language?: number;
       },
     ) => {
@@ -270,7 +270,7 @@ export class ApiClient {
       );
     },
 
-    getMonitor: (contest_id: number) => {
+    getMonitor: (contest_id: string) => {
       return this.Fetch<GetMonitorResponse>(
         "get",
         `/contests/${contest_id}/monitor`,
@@ -305,7 +305,7 @@ export class ApiClient {
 }
 
 export type Contest = {
-  id: number;
+  id: string;
   title: string;
   created_at: string;
   updated_at: string;
@@ -461,7 +461,7 @@ export type Solution = {
   problem_id: number;
   problem_title: string;
   position: number;
-  contest_id: number;
+  contest_id: string;
   contest_title: string;
   updated_at: string;
   created_at: string;
@@ -480,7 +480,7 @@ export type SolutionsListItem = {
   problem_id: number;
   problem_title: string;
   position: number;
-  contest_id: number;
+  contest_id: string;
   contest_title: string;
   updated_at: string;
   created_at: string;

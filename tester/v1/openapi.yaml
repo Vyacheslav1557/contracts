@@ -199,8 +199,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 1
       responses:
         "200":
@@ -218,8 +218,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 3
       responses:
         "200":
@@ -233,8 +233,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 3
       requestBody:
         required: true
@@ -255,8 +255,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 1
         - name: problem_id
           in: query
@@ -289,8 +289,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 1
       responses:
         "200":
@@ -315,8 +315,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 3
       responses:
         "200":
@@ -331,8 +331,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 1
         - name: page
           in: query
@@ -364,8 +364,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 1
         - name: user_id
           in: query
@@ -395,8 +395,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 1
       responses:
         "200":
@@ -418,8 +418,8 @@ paths:
           in: query
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 1
         - name: language
           in: query
@@ -532,8 +532,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int32
+            type: string
+            format: uuid
           example: 1
       responses:
         "200":
@@ -837,9 +837,8 @@ components:
         - updated_at
       properties:
         id:
-          type: integer
-          format: int32
-          example: 1
+          type: string
+          format: uuid
         title:
           type: string
           example: "Test contest"
@@ -1047,9 +1046,8 @@ components:
           example: 1
 
         contest_id:
-          type: integer
-          format: int32
-          example: 1
+          type: string
+          format: uuid
         contest_title:
           type: string
           example: "Contest title"
@@ -1143,9 +1141,8 @@ components:
           example: 1
 
         contest_id:
-          type: integer
-          format: int32
-          example: 1
+          type: string
+          format: uuid
         contest_title:
           type: string
           example: "Contest title"

@@ -20,10 +20,10 @@ const (
 
 // Contest defines model for Contest.
 type Contest struct {
-	CreatedAt time.Time `json:"created_at"`
-	Id        int32     `json:"id"`
-	Title     string    `json:"title"`
-	UpdatedAt time.Time `json:"updated_at"`
+	CreatedAt time.Time          `json:"created_at"`
+	Id        openapi_types.UUID `json:"id"`
+	Title     string             `json:"title"`
+	UpdatedAt time.Time          `json:"updated_at"`
 }
 
 // ContestProblem defines model for ContestProblem.
@@ -184,7 +184,7 @@ type ProblemsListItem struct {
 
 // Solution defines model for Solution.
 type Solution struct {
-	ContestId    int32              `json:"contest_id"`
+	ContestId    openapi_types.UUID `json:"contest_id"`
 	ContestTitle string             `json:"contest_title"`
 	CreatedAt    time.Time          `json:"created_at"`
 	Id           int32              `json:"id"`
@@ -205,7 +205,7 @@ type Solution struct {
 
 // SolutionsListItem defines model for SolutionsListItem.
 type SolutionsListItem struct {
-	ContestId    int32              `json:"contest_id"`
+	ContestId    openapi_types.UUID `json:"contest_id"`
 	ContestTitle string             `json:"contest_title"`
 	CreatedAt    time.Time          `json:"created_at"`
 	Id           int32              `json:"id"`
@@ -314,9 +314,9 @@ type ListSolutionsParams struct {
 
 // CreateSolutionParams defines parameters for CreateSolution.
 type CreateSolutionParams struct {
-	ProblemId int32 `form:"problem_id" json:"problem_id"`
-	ContestId int32 `form:"contest_id" json:"contest_id"`
-	Language  int32 `form:"language" json:"language"`
+	ProblemId int32              `form:"problem_id" json:"problem_id"`
+	ContestId openapi_types.UUID `form:"contest_id" json:"contest_id"`
+	Language  int32              `form:"language" json:"language"`
 }
 
 // GetUsersParams defines parameters for GetUsers.
@@ -349,34 +349,34 @@ type ServerInterface interface {
 	CreateContest(c *fiber.Ctx, params CreateContestParams) error
 
 	// (DELETE /contests/{contest_id})
-	DeleteContest(c *fiber.Ctx, contestId int32) error
+	DeleteContest(c *fiber.Ctx, contestId openapi_types.UUID) error
 
 	// (GET /contests/{contest_id})
-	GetContest(c *fiber.Ctx, contestId int32) error
+	GetContest(c *fiber.Ctx, contestId openapi_types.UUID) error
 
 	// (PATCH /contests/{contest_id})
-	UpdateContest(c *fiber.Ctx, contestId int32) error
+	UpdateContest(c *fiber.Ctx, contestId openapi_types.UUID) error
 
 	// (GET /contests/{contest_id}/monitor)
-	GetMonitor(c *fiber.Ctx, contestId int32) error
+	GetMonitor(c *fiber.Ctx, contestId openapi_types.UUID) error
 
 	// (DELETE /contests/{contest_id}/participants)
-	DeleteParticipant(c *fiber.Ctx, contestId int32, params DeleteParticipantParams) error
+	DeleteParticipant(c *fiber.Ctx, contestId openapi_types.UUID, params DeleteParticipantParams) error
 
 	// (GET /contests/{contest_id}/participants)
-	ListParticipants(c *fiber.Ctx, contestId int32, params ListParticipantsParams) error
+	ListParticipants(c *fiber.Ctx, contestId openapi_types.UUID, params ListParticipantsParams) error
 
 	// (POST /contests/{contest_id}/participants)
-	CreateParticipant(c *fiber.Ctx, contestId int32, params CreateParticipantParams) error
+	CreateParticipant(c *fiber.Ctx, contestId openapi_types.UUID, params CreateParticipantParams) error
 
 	// (POST /contests/{contest_id}/problems)
-	CreateContestProblem(c *fiber.Ctx, contestId int32, params CreateContestProblemParams) error
+	CreateContestProblem(c *fiber.Ctx, contestId openapi_types.UUID, params CreateContestProblemParams) error
 
 	// (DELETE /contests/{contest_id}/problems/{problem_id})
-	DeleteContestProblem(c *fiber.Ctx, contestId int32, problemId int32) error
+	DeleteContestProblem(c *fiber.Ctx, contestId openapi_types.UUID, problemId int32) error
 
 	// (GET /contests/{contest_id}/problems/{problem_id})
-	GetContestProblem(c *fiber.Ctx, contestId int32, problemId int32) error
+	GetContestProblem(c *fiber.Ctx, contestId openapi_types.UUID, problemId int32) error
 
 	// (GET /health)
 	GetHealth(c *fiber.Ctx) error
@@ -521,7 +521,7 @@ func (siw *ServerInterfaceWrapper) DeleteContest(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -539,7 +539,7 @@ func (siw *ServerInterfaceWrapper) GetContest(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -557,7 +557,7 @@ func (siw *ServerInterfaceWrapper) UpdateContest(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -575,7 +575,7 @@ func (siw *ServerInterfaceWrapper) GetMonitor(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -593,7 +593,7 @@ func (siw *ServerInterfaceWrapper) DeleteParticipant(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -635,7 +635,7 @@ func (siw *ServerInterfaceWrapper) ListParticipants(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -692,7 +692,7 @@ func (siw *ServerInterfaceWrapper) CreateParticipant(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -734,7 +734,7 @@ func (siw *ServerInterfaceWrapper) CreateContestProblem(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -776,7 +776,7 @@ func (siw *ServerInterfaceWrapper) DeleteContestProblem(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
@@ -802,7 +802,7 @@ func (siw *ServerInterfaceWrapper) GetContestProblem(c *fiber.Ctx) error {
 	var err error
 
 	// ------------- Path parameter "contest_id" -------------
-	var contestId int32
+	var contestId openapi_types.UUID
 
 	err = runtime.BindStyledParameterWithOptions("simple", "contest_id", c.Params("contest_id"), &contestId, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
