@@ -256,8 +256,9 @@ type User struct {
 
 // ListContestsParams defines parameters for ListContests.
 type ListContestsParams struct {
-	Page     int32 `form:"page" json:"page"`
-	PageSize int32 `form:"pageSize" json:"pageSize"`
+	Page     int32   `form:"page" json:"page"`
+	PageSize int32   `form:"pageSize" json:"pageSize"`
+	Title    *string `form:"title,omitempty" json:"title,omitempty"`
 }
 
 // CreateContestParams defines parameters for CreateContest.
@@ -468,6 +469,13 @@ func (siw *ServerInterfaceWrapper) ListContests(c *fiber.Ctx) error {
 	err = runtime.BindQueryParameter("form", true, true, "pageSize", query, &params.PageSize)
 	if err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter pageSize: %w", err).Error())
+	}
+
+	// ------------- Optional query parameter "title" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "title", query, &params.Title)
+	if err != nil {
+		return fiber.NewError(fiber.StatusBadRequest, fmt.Errorf("Invalid format for parameter title: %w", err).Error())
 	}
 
 	return siw.Handler.ListContests(c, params)

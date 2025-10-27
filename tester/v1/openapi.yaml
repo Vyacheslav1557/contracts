@@ -157,6 +157,11 @@ paths:
             type: integer
             format: int32
           example: 10
+        - name: title
+          in: query
+          schema:
+            type: string
+          example: "Contest"
       security:
         - bearerAuth: []
       responses:

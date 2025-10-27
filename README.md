@@ -21,10 +21,53 @@ developers, testers, and other stakeholders. They can be used to:
 
 - `/[service-name]/[version]`: Contains the OpenAPI schema file (e.g., `.yaml` or `.json`).
 
+## Prerequisites
+
+- **Go** 1.20+ - for Go code generation
+- **Node.js** 18+ with npm - for TypeScript code generation
+
 ## Getting Started
 
 1. **Clone the Repository**:
 
 ```bash
 git clone https://github.com/Vyacheslav1557/contracts.git
+cd contracts
 ```
+
+2. **Install Dependencies**:
+
+```bash
+make dependencies
+```
+
+3. **Generate Code**:
+
+Generate both Go and TypeScript code:
+
+```bash
+make all
+```
+
+Or generate them separately:
+
+```bash
+make go-gen   # Generate Go code only
+make ts-gen   # Generate TypeScript code only
+```
+
+4. **Clean Generated Files**:
+
+```bash
+make clean
+```
+
+## Available Commands
+
+- `make all` - Generate all code (Go + TypeScript)
+- `make go-gen` - Generate Go code from OpenAPI spec
+- `make ts-gen` - Generate TypeScript code from OpenAPI spec
+- `make dependencies` - Install all dependencies
+- `make go-dependencies` - Install Go dependencies
+- `make ts-dependencies` - Install Node dependencies
+- `make clean` - Remove generated files

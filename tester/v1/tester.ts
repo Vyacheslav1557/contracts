@@ -137,7 +137,11 @@ export class ApiClient {
       return this.Fetch<void>("delete", `/problems/${id}`, {});
     },
 
-    listContests: (search: { page?: number; pageSize?: number }) => {
+    listContests: (search: {
+      page?: number;
+      pageSize?: number;
+      title?: string;
+    }) => {
       return this.Fetch<ListContestsResponse>("get", "/contests", { search });
     },
 

@@ -1,33 +1,35 @@
-.PHONY: all go-gen ts-gen dependencies go-dependencies ts-dependencies
+.PHONY: all go-gen ts-gen dependencies go-dependencies ts-dependencies clean
 
-PROJECT_DIR := $(CURDIR)
+# Check if required tools are installed
+check-go:
+	@which go > /dev/null || (echo "Error: go is not installed" && exit 1)
 
-GO_CACHE  := $(HOME)/.cache/go
-NPM_CACHE := $(HOME)/.cache/npm
+check-npm:
+	@which npm > /dev/null || (echo "Error: npm is not installed" && exit 1)
 
-GO_IMAGE  := golang:1.24.6-alpine
-NODE_IMAGE := node:24-alpine
+# Install Go dependencies
+go-dependencies: check-go go.sum go.mod
+	go mod download
 
-define docker_run
-docker run --rm \
-	-v $(PROJECT_DIR):/app -w /app \
-	$(2) \
-	$(1) $(3)
-endef
-
-go-dependencies: go.sum go.mod
-	$(call docker_run,$(GO_IMAGE),-v $(GO_CACHE)/mod:/go/pkg/mod -v $(GO_CACHE)/build:/root/.cache/go-build,go mod download)
-
+# Generate Go code from OpenAPI spec
 go-gen: go-dependencies
-	$(call docker_run,$(GO_IMAGE),-v $(GO_CACHE)/mod:/go/pkg/mod -v $(GO_CACHE)/build:/root/.cache/go-build,go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen -config cfg.yaml ./tester/v1/openapi.yaml)
+	go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen -config cfg.yaml ./tester/v1/openapi.yaml
 
-ts-dependencies: package.json package-lock.json
-	$(call docker_run,$(NODE_IMAGE),-v $(NPM_CACHE):/root/.npm,npm ci --prefer-offline)
+# Install Node dependencies
+ts-dependencies: check-npm package.json package-lock.json
+	npm ci
 
+# Generate TypeScript code from OpenAPI spec
 ts-gen: ts-dependencies
-	$(call docker_run,$(NODE_IMAGE),-v $(NPM_CACHE):/root/.npm,npm run gen)
+	npm run gen
 
+# Install all dependencies
 dependencies: go-dependencies ts-dependencies
 
+# Generate all code
 all: go-gen ts-gen
+
+# Clean generated files
+clean:
+	rm -f ./tester/v1/tester.go ./tester/v1/tester.ts
 
